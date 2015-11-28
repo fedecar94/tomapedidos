@@ -55,9 +55,73 @@ public class Main extends AppCompatActivity {
         });
 
     }
+    
     public void listar() {
+        setContentView(R.layout.menu2_ac);
+        
+        ((TextView) findViewById(R.id.usuario)).setText("Listar Usuarios");
+        ((TextView) findViewById(R.id.cliente)).setText("Listar Clientes");
+        ((TextView) findViewById(R.id.pedido)).setText("Listar Pedidos");
+        ((TextView) findViewById(R.id.producto)).setText("Listar Productos");
+        
+        findViewById(R.id.cliente).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clienteListar();
+            }
+        });
+        findViewById(R.id.producto).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                productoListar();
+            }
+        });
+        findViewById(R.id.pedido).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pedidoListar();
+            }
+        });
+        findViewById(R.id.usuario).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pedidoListar();
+            }
+        });
     }
+    
     public void anadir() {
+        setContentView(R.layout.menu2_ac);
+        
+        ((TextView) findViewById(R.id.usuario)).setText("Añadir Usuarios");
+        ((TextView) findViewById(R.id.cliente)).setText("Añadir Clientes");
+        ((TextView) findViewById(R.id.pedido)).setText("Añadir Pedidos");
+        ((TextView) findViewById(R.id.producto)).setText("Añadir Productos");
+        
+        findViewById(R.id.cliente).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clienteAnadir();
+            }
+        });
+        findViewById(R.id.producto).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                productoAnadir();
+            }
+        });
+        findViewById(R.id.pedido).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pedidoAnadir();
+            }
+        });
+        findViewById(R.id.usuario).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pedidoAnadir();
+            }
+        });
     }
 
     public void listarCli() {
@@ -70,7 +134,7 @@ public class Main extends AppCompatActivity {
         });
         ref = new Firebase(fireUrl).child("pedido").child(c.getId());
         array.clear();
-        ((TextView) findViewById(R.id.cosa)).setText("Cliente: "+c.getRuc());
+        ((TextView) findViewById(R.id.cosa)).setText("Clientes");
         ((TextView) findViewById(R.id.message)).setText("Cargando");
         ref.addValueEventListener(new ValueEventListener() {
             @Override
