@@ -5,33 +5,25 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="tomar pedido"
-        android:id="@+id/tomar"
-        android:layout_above="@+id/listar"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="listar pedidos"
-        android:id="@+id/listar"
+        android:text="aladir datos"
+        android:id="@+id/anadir"
         android:layout_centerVertical="true"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="listar clientes"
-        android:id="@+id/cliente"
-        android:layout_below="@+id/listar"
         android:layout_centerHorizontal="true" />
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="listar productos"
-        android:id="@+id/producto"
-        android:layout_below="@+id/cliente"
+        android:text="listar datos"
+        android:id="@+id/listar"
+        android:layout_below="@+id/anadir"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="opciones especiales"
+        android:id="@+id/cliente"
+        android:layout_below="@+id/listar"
         android:layout_centerHorizontal="true" />
 
     <TextView
@@ -60,14 +52,5 @@
         android:id="@+id/slogan"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/empresa" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text=" "
-        android:id="@+id/textView10"
-        android:layout_below="@+id/slogan"
-        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

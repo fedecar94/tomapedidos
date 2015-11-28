@@ -1,4 +1,4 @@
-package py.com.tomapedidos.vendedor;
+package py.com.tomapedidos.empresa;
 
 import java.util.Calendar;
 

@@ -1,4 +1,4 @@
-package py.com.tomapedidos.vendedor;
+package py.com.tomapedidos.empresa;
 
 /**
  * Created by tekor on 27/11/2015.

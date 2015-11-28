@@ -7,6 +7,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -18,7 +19,6 @@ import java.util.ArrayList;
 public class Main extends AppCompatActivity {
     private Firebase ref;
     final private String fireUrl = "https://tomapedidos.firebaseio.com/";
-    private Empresa e;
     private Usuario u;
     private Cliente c;
     private ArrayList<Generics> array = new ArrayList<Generics>();
@@ -36,10 +36,20 @@ public class Main extends AppCompatActivity {
         findViewById(R.id.submit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String co = ((EditText) findViewById(R.id.company)).getText().toString();
-                String un = ((EditText) findViewById(R.id.username)).getText().toString();
+                final String un = ((EditText) findViewById(R.id.username)).getText().toString();
                 String pw = ((EditText) findViewById(R.id.password)).getText().toString();
-
+                ref.authWithPassword(un, pw, new Firebase.AuthResultHandler() {
+                    @Override
+                    public void onAuthenticated(AuthData authData) {
+                        ((TextView) findViewById(R.id.message)).setText("User ID: " + authData.getUid() + ", Provider: " + authData.getProvider());
+                        u = new Usuario(authData.getUid(),un);
+                        menu();
+                    }
+                    @Override
+                    public void onAuthenticationError(FirebaseError firebaseError) {
+                        ((TextView) findViewById(R.id.message)).setText("Error: "+firebaseError.getMessage());
+                    }
+                });
             }
         });
     }
@@ -48,9 +58,6 @@ public class Main extends AppCompatActivity {
         c=null;
         setContentView(R.layout.menu_ac);
 
-        ((TextView) findViewById(R.id.empresa)).setText(e.getName());
-        ((TextView) findViewById(R.id.slogan)).setText(e.getSlogan());
-        ((TextView) findViewById(R.id.empleado)).setText(u.getName());
 
         findViewById(R.id.listar).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,7 +93,7 @@ public class Main extends AppCompatActivity {
 
     public void listarCli() {
         setContentView(R.layout.listar_ac);
-        ref = new Firebase(fireUrl).child(e.getId()).child("pedido").child(c.getId());
+        ref = new Firebase(fireUrl).child("pedido").child(c.getId());
         array.clear();
         ((TextView) findViewById(R.id.cosa)).setText("Cliente: "+c.getRuc());
         ((TextView) findViewById(R.id.message)).setText("Cargando");
@@ -108,7 +115,7 @@ public class Main extends AppCompatActivity {
 
     public void cliente() {
         setContentView(R.layout.listar_ac);
-        ref = new Firebase(fireUrl).child(e.getId()).child("cliente");
+        ref = new Firebase(fireUrl).child("cliente");
         array.clear();
         ((TextView) findViewById(R.id.cosa)).setText("Clientes");
         ((TextView) findViewById(R.id.message)).setText("Cargando");
@@ -130,7 +137,7 @@ public class Main extends AppCompatActivity {
 
     public void producto() {
         setContentView(R.layout.listar_ac);
-        ref = new Firebase(fireUrl).child(e.getId()).child("producto");
+        ref = new Firebase(fireUrl).child("producto");
         array.clear();
         ((TextView) findViewById(R.id.cosa)).setText("Productos");
         ((TextView) findViewById(R.id.message)).setText("Cargando");

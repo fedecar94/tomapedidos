@@ -1,4 +1,4 @@
-package py.com.tomapedidos.vendedor;
+package py.com.tomapedidos.empresa;
 
 import android.content.Context;
 import android.view.LayoutInflater;
