@@ -3,6 +3,9 @@ package py.com.tomapedidos.empresa;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -19,6 +22,7 @@ public class Main extends AppCompatActivity {
     String fireUrl = "https://tomapedidos.firebaseio.com";
     ArrayList<Generics> array = new ArrayList<Generics>();
     Cliente c;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +42,8 @@ public class Main extends AppCompatActivity {
         });
 
     }
-    public void menu(){
+
+    private void menu() {
         setContentView(R.layout.menu_ac);
 
         findViewById(R.id.listar).setOnClickListener(new View.OnClickListener() {
@@ -55,15 +60,15 @@ public class Main extends AppCompatActivity {
         });
 
     }
-    
-    public void listar() {
+
+    private void listar() {
         setContentView(R.layout.menu2_ac);
-        
-        ((TextView) findViewById(R.id.usuario)).setText("Listar Usuarios");
-        ((TextView) findViewById(R.id.cliente)).setText("Listar Clientes");
-        ((TextView) findViewById(R.id.pedido)).setText("Listar Pedidos");
-        ((TextView) findViewById(R.id.producto)).setText("Listar Productos");
-        
+
+        ((Button) findViewById(R.id.usuario)).setText("Listar Usuarios");
+        ((Button) findViewById(R.id.cliente)).setText("Listar Clientes");
+        ((Button) findViewById(R.id.pedido)).setText("Listar Pedidos");
+        ((Button) findViewById(R.id.producto)).setText("Listar Productos");
+
         findViewById(R.id.cliente).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,19 +90,14 @@ public class Main extends AppCompatActivity {
         findViewById(R.id.usuario).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                pedidoListar();
+                usuarioListar();
             }
         });
     }
-    
-    public void anadir() {
+
+    private void anadir() {
         setContentView(R.layout.menu2_ac);
-        
-        ((TextView) findViewById(R.id.usuario)).setText("Añadir Usuarios");
-        ((TextView) findViewById(R.id.cliente)).setText("Añadir Clientes");
-        ((TextView) findViewById(R.id.pedido)).setText("Añadir Pedidos");
-        ((TextView) findViewById(R.id.producto)).setText("Añadir Productos");
-        
+
         findViewById(R.id.cliente).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -119,12 +119,97 @@ public class Main extends AppCompatActivity {
         findViewById(R.id.usuario).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                pedidoAnadir();
+                usuarioAnadir();
             }
         });
+
+        ((Button) findViewById(R.id.pedido)).setText("Añadir Pedidos");
+        ((Button) findViewById(R.id.cliente)).setText("Añadir Clientes");
+        ((Button) findViewById(R.id.producto)).setText("Añadir Productos");
+        ((Button) findViewById(R.id.usuario)).setText("Añadir Usuarios");
     }
 
-    public void listarCli() {
+    private void anadirPed(){
+        
+    }
+
+    private void clienteAnadir() {
+        setContentView(R.layout.anadir_cli);
+        ref = new Firebase(fireUrl).child("cliente");
+        findViewById(R.id.add).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Cliente cli = new Cliente(
+                        Integer.toString(((EditText) findViewById(R.id.ruc)).getText().toString().hashCode()),
+                        ((EditText) findViewById(R.id.name)).getText().toString(),
+                        ((EditText) findViewById(R.id.ruc)).getText().toString(),
+                        ((EditText) findViewById(R.id.pass)).getText().toString().hashCode()
+                );
+                ref.child(cli.getId());
+                ref.setValue(cli);
+            }
+        });
+        anadir();
+    }
+
+    private void productoAnadir() {
+        setContentView(R.layout.anadir_pro);
+        ref = new Firebase(fireUrl).child("producto");
+        findViewById(R.id.add).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Producto pro = new Producto(
+                        Integer.toString(((EditText) findViewById(R.id.name)).getText().toString().hashCode()),
+                        ((EditText) findViewById(R.id.name)).getText().toString(),
+                        Integer.parseInt(((EditText) findViewById(R.id.price)).getText().toString())
+                );
+                ref.child(pro.getId());
+                ref.setValue(pro);
+            }
+        });
+        anadir();
+    }
+
+    private void pedidoAnadir() {
+        setContentView(R.layout.listar_ac);
+        findViewById(R.id.menu).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                menu();
+            }
+        });
+        ref = new Firebase(fireUrl).child("cliente");
+        array.clear();
+        ((TextView) findViewById(R.id.cosa)).setText("Clientes");
+        ((TextView) findViewById(R.id.message)).setText("Cargando");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    Cliente u = postSnapshot.getValue(Cliente.class);
+                    array.add(u);
+                    listalista(array);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
+        ListView lista = (ListView) findViewById(R.id.lista);
+        lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> pariente, View view, int posicion, long id) {
+                c = (Cliente) pariente.getItemAtPosition(posicion);
+            }
+        });
+        anadirPed();
+    }
+
+    private void usuarioAnadir() {
+    }
+
+    private void listarPed() {
         setContentView(R.layout.listar_ac);
         findViewById(R.id.menu).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,7 +219,7 @@ public class Main extends AppCompatActivity {
         });
         ref = new Firebase(fireUrl).child("pedido").child(c.getId());
         array.clear();
-        ((TextView) findViewById(R.id.cosa)).setText("Clientes");
+        ((TextView) findViewById(R.id.cosa)).setText("Pedidos");
         ((TextView) findViewById(R.id.message)).setText("Cargando");
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -146,13 +231,14 @@ public class Main extends AppCompatActivity {
                     listalista(array);
                 }
             }
+
             @Override
             public void onCancelled(FirebaseError firebaseError) {
             }
         });
     }
 
-    public void clienteListar() {
+    private void clienteListar() {
         setContentView(R.layout.listar_ac);
         findViewById(R.id.menu).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,13 +260,14 @@ public class Main extends AppCompatActivity {
                     listalista(array);
                 }
             }
+
             @Override
             public void onCancelled(FirebaseError firebaseError) {
             }
         });
     }
 
-    public void productoListar() {
+    private void productoListar() {
         setContentView(R.layout.listar_ac);
         findViewById(R.id.menu).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,7 +296,47 @@ public class Main extends AppCompatActivity {
         });
     }
 
-    public void listalista(ArrayList<?> listisima){
+    private void usuarioListar() {
+
+    }
+
+    private void pedidoListar() {
+        setContentView(R.layout.listar_ac);
+        findViewById(R.id.menu).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                menu();
+            }
+        });
+        ref = new Firebase(fireUrl).child("cliente");
+        array.clear();
+        ((TextView) findViewById(R.id.cosa)).setText("Clientes");
+        ((TextView) findViewById(R.id.message)).setText("Cargando");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    Cliente u = postSnapshot.getValue(Cliente.class);
+                    array.add(u);
+                    listalista(array);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
+        ListView lista = (ListView) findViewById(R.id.lista);
+        lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> pariente, View view, int posicion, long id) {
+                c = (Cliente) pariente.getItemAtPosition(posicion);
+            }
+        });
+        listarPed();
+    }
+
+    private void listalista(ArrayList<?> listisima) {
         ListView lista = (ListView) findViewById(R.id.lista);
         lista.setAdapter(new listaAdaptador(this, R.layout.itemlista, listisima) {
             @Override

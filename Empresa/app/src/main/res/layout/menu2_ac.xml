@@ -30,7 +30,7 @@
         android:layout_below="@+id/empresa" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="New Button"
         android:id="@+id/cliente"
@@ -38,7 +38,7 @@
         android:layout_centerHorizontal="true" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="New Button"
         android:id="@+id/pedido"
@@ -46,7 +46,7 @@
         android:layout_centerHorizontal="true" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="New Button"
         android:id="@+id/producto"
@@ -54,7 +54,7 @@
         android:layout_centerHorizontal="true" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="New Button"
         android:id="@+id/usuario"
