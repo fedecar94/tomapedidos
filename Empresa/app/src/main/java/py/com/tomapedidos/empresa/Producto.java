@@ -5,6 +5,7 @@ package py.com.tomapedidos.empresa;
  */
 public class Producto extends Generics {
     private Integer precio;
+    private Integer cantidad=0;
 
     public Producto() {
         super();
@@ -14,6 +15,9 @@ public class Producto extends Generics {
         super(id, name);
         this.precio = precio;
     }
+
+    public void cant(Integer c){this.cantidad=c;}
+    public Integer canti(){return cantidad;}
 
     public Integer getPrecio() {
         return precio;

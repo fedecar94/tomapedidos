@@ -22,12 +22,14 @@ public class Main extends AppCompatActivity {
     String fireUrl = "https://tomapedidos.firebaseio.com";
     ArrayList<Generics> array = new ArrayList<Generics>();
     Cliente c;
+    Producto p;
+    ArrayList<Producto> arpro = new ArrayList<Producto>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_ac);
-        Firebase.setAndroidContext(this);
+            Firebase.setAndroidContext(this);
         ref = new Firebase(fireUrl);
         ref.authWithPassword("empresa@ejemplo.com", "nadiesabe", new Firebase.AuthResultHandler() {
             @Override
@@ -98,6 +100,11 @@ public class Main extends AppCompatActivity {
     private void anadir() {
         setContentView(R.layout.menu2_ac);
 
+        ((Button) findViewById(R.id.usuario)).setText("Añadir Usuarios");
+        ((Button) findViewById(R.id.cliente)).setText("Añadir Clientes");
+        ((Button) findViewById(R.id.pedido)).setText("Añadir Pedidos");
+        ((Button) findViewById(R.id.producto)).setText("Añadir Productos");
+
         findViewById(R.id.cliente).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -122,16 +129,64 @@ public class Main extends AppCompatActivity {
                 usuarioAnadir();
             }
         });
-
-        ((Button) findViewById(R.id.pedido)).setText("Añadir Pedidos");
-        ((Button) findViewById(R.id.cliente)).setText("Añadir Clientes");
-        ((Button) findViewById(R.id.producto)).setText("Añadir Productos");
-        ((Button) findViewById(R.id.usuario)).setText("Añadir Usuarios");
     }
 
     private void anadirPed(){
-        
+        productoListar();
+        ListView lista = (ListView) findViewById(R.id.lista);
+        lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> pariente, View view, int posicion, long id) {
+                p = (Producto) pariente.getItemAtPosition(posicion);
+                anadircan();
+            }
+        });
     }
+
+    private void anadircan(){
+        setContentView(R.layout.cantidad_ac);
+        ((TextView) findViewById(R.id.protext)).setText(p.getName());
+        findViewById(R.id.menu).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                menu();
+            }
+        });
+        findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finalizar();
+            }
+        });
+        findViewById(R.id.add).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                p.cant(Integer.parseInt(((EditText) findViewById(R.id.can)).getText().toString()));
+                arpro.add(p);
+                anadirPed();
+            }
+        });
+
+    }
+
+    private void finalizar(){
+        setContentView(R.layout.finalizar_ac);
+        ((TextView) findViewById(R.id.clien)).setText(c.getName());
+        findViewById(R.id.end).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String pass =((EditText) findViewById(R.id.can)).getText().toString();
+                if (c.confirm(pass.hashCode())){
+                    upload();
+                    ((TextView) findViewById(R.id.message)).setText("Guardando Pedido");
+                }
+                else
+                    ((TextView) findViewById(R.id.message)).setText("Contraseña Incorrecta");
+            }
+        });
+    }
+
+    private void upload(){}
 
     private void clienteAnadir() {
         setContentView(R.layout.anadir_cli);
@@ -145,11 +200,12 @@ public class Main extends AppCompatActivity {
                         ((EditText) findViewById(R.id.ruc)).getText().toString(),
                         ((EditText) findViewById(R.id.pass)).getText().toString().hashCode()
                 );
-                ref.child(cli.getId());
+                ref = ref.child(cli.getId());
                 ref.setValue(cli);
+                anadir();
             }
         });
-        anadir();
+
     }
 
     private void productoAnadir() {
@@ -163,47 +219,25 @@ public class Main extends AppCompatActivity {
                         ((EditText) findViewById(R.id.name)).getText().toString(),
                         Integer.parseInt(((EditText) findViewById(R.id.price)).getText().toString())
                 );
-                ref.child(pro.getId());
+                ref = ref.child(pro.getId());
                 ref.setValue(pro);
+                anadir();
             }
         });
-        anadir();
+
     }
 
     private void pedidoAnadir() {
-        setContentView(R.layout.listar_ac);
-        findViewById(R.id.menu).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                menu();
-            }
-        });
-        ref = new Firebase(fireUrl).child("cliente");
-        array.clear();
-        ((TextView) findViewById(R.id.cosa)).setText("Clientes");
-        ((TextView) findViewById(R.id.message)).setText("Cargando");
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    Cliente u = postSnapshot.getValue(Cliente.class);
-                    array.add(u);
-                    listalista(array);
-                }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-            }
-        });
+        clienteListar();
         ListView lista = (ListView) findViewById(R.id.lista);
         lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> pariente, View view, int posicion, long id) {
                 c = (Cliente) pariente.getItemAtPosition(posicion);
+                anadirPed();
             }
         });
-        anadirPed();
+
     }
 
     private void usuarioAnadir() {
@@ -331,9 +365,9 @@ public class Main extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> pariente, View view, int posicion, long id) {
                 c = (Cliente) pariente.getItemAtPosition(posicion);
+                listarPed();
             }
         });
-        listarPed();
     }
 
     private void listalista(ArrayList<?> listisima) {
